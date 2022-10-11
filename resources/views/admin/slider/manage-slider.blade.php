@@ -1,0 +1,79 @@
+@extends('admin.master')
+
+@section('title')
+    Slider | SMS MV
+@endsection
+
+@section('content')
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Slider List
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <h3 class="text-success text-center">{{ Session::get('message') }}</h3>
+                    <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead>
+                        <tr>
+                            <th>SL No.</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Button</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        @php($i = 1)
+                        @foreach($sliders as $slider)
+                            <tbody>
+                            <tr class="odd gradeX">
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $slider->title }}</td>
+                                <td>{!! $slider->des !!}</td>
+                                <td>{{ $slider->btn }}</td>
+                                <td><img src="{{ asset($slider->image) }}" alt="" height="80" width="120"></td>
+                                <td>@if($slider->status == 1)
+                                        <p class="btn btn-success">Active</p>
+                                        @else
+                                        <p class="btn btn-warning">Inactive</p>
+                                @endif</td>
+                                <td>
+                                    <a href="{{ route('edit.slider',['id' => $slider->id]) }}" class="text-success btn btn-primary">Edit</a>
+                                    <a href="#" id="{{ $slider->id }}" class="text-danger delete-btn btn btn-danger" onclick="
+                                            event.preventDefault();
+                                            var check = confirm('Are you sure to delete this??');
+                                            if(check){
+                                            document.getElementById('deleteSliderForm'+'{{ $slider->id }}').submit();
+                                            }
+                                            ">Delete</a>
+                                    <form id="deleteSliderForm{{ $slider->id }}" action="{{ route('delete.slider') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" value="{{ $slider->id }}" name="id"/>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        @endforeach
+                    </table>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+@endsection
